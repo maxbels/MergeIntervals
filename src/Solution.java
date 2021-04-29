@@ -9,7 +9,7 @@ public class Solution {
 	 * @param Liste von Intervallen
 	 * @return Liste mit sich nicht überlappenden Intervallen
 	 */
-	private static List<Intervall> merge(List<Intervall> listIntervalle) {
+	static List<Intervall> merge(List<Intervall> listIntervalle) {
 		List<Intervall> mergedList = new ArrayList<>();
 		
 		//Annahme: Alle erhaltenen Intervalle sind in der Form [a, b], wobei a < b
@@ -43,29 +43,51 @@ public class Solution {
 		
 		return mergedList;
 	}
+	
+	/**
+	 * Methode die den Input in Form eines Strings in eine Liste von Intervallen umwandelt
+	 * @param input - Annahme: Input ist immer in der Form "[a,b] [c,d] [e,f] ..."
+	 * @return Liste mit Intervallen
+	 */
+	static List<Intervall> handleInput(String input) {
+		List<Intervall> listIntervall = new ArrayList<>();
+		if (input.length() > 0) {
+			String[] inputArray = input.split(" ");
+
+			for (String s : inputArray) {
+				String sTrimmed = s.substring(1, s.length() - 1);
+				String[] inputValues = sTrimmed.split(",");
+				listIntervall.add(new Intervall(Integer.parseInt(inputValues[0]), Integer.parseInt(inputValues[1])));
+			}
+		}
+		return listIntervall;
+	}
 
 	public static void main(String[] args) {
 
 		//Input
-		Intervall intervallEins = new Intervall(25, 30);
-		Intervall intervallZwei = new Intervall(2, 19);
-		Intervall intervallDrei = new Intervall(14, 23);
-		Intervall intervallVier = new Intervall(4, 8);
-		
+		//Annahme: Input ist immer in der Form "[a,b] [c,d] [e,f] ..."
+		//Wobei es sich bei Start- und Endzeitpunkten eines Intervalls um Integer handelt
+		String input = "[25,30] [2,19] [14,23] [4,8]";
+
 		//Befüllen der Liste mit Input
-		List<Intervall> listIntervalle = new ArrayList<>();
-		
-		listIntervalle.add(intervallEins);
-		listIntervalle.add(intervallZwei);
-		listIntervalle.add(intervallDrei);
-		listIntervalle.add(intervallVier);
+		List<Intervall> listIntervalle = handleInput(input);
 		
 		//Merge
+		long startTime = System.nanoTime();
 		List<Intervall> solution = merge(listIntervalle);
+		long endTime = System.nanoTime();
+
+		//Laufzeit ( O(nlogn) )
+		System.out.println("Laufzeit: " + (endTime - startTime) / 1000000 + "ms"); 
+		
+		//Benutzter Speicher
+		double usedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024*1024);
+		System.out.println("Benutzter Speicher: " + usedMemory + "MB");
 		
 		//Ausgabe
-		solution.stream().forEach(intervall -> System.out.print(intervall.toString()));
-		
+		System.out.println("Solution:");
+        solution.forEach(System.out::print);
 	}
 
 }
